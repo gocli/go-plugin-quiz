@@ -1,0 +1,28 @@
+{
+  "name": "go-plugin-quiz",
+  "version": "1.0.0",
+  "description": "Go plugin to collect user inputs with Enquirer prompts",
+  "main": "plugin.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gocli/go-plugin-quiz.git"
+  },
+  "keywords": [
+    "quiz",
+    "ask",
+    "input",
+    "template",
+    "cli"
+  ],
+  "author": "Stanislav Termosa <termosa.stanislav@gmail.com> (https://github.com/termosa)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gocli/go-plugin-quiz/issues"
+  },
+  "homepage": "https://github.com/gocli/go-plugin-quiz#readme",
+  "dependencies": {
+    "enquirer": "^1.0.3",
+    "prompt-confirm": "^1.2.0",
+    "prompt-list": "^3.1.2"
+  }
+}
