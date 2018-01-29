@@ -41,13 +41,15 @@ var questionAsString = /* string */ message
 var questionAsObject = /* object */ {
   message: /* required stirng */ message,
   type: /* string */ 'input',
+  name: /* string */ undefined,
   default: /* any */ undefined,
-  validate: /* function */ (/* input */, /* options */) => true,
+  validate: /* function */ () => true,
   choices: /* array|object|function */ [],
   source: /* array|function */ [],
   multiple: /* boolean */ false,
   radio: /* boolean */ false,
-  transform: /* function */ (answer) => answer
+  transform: /* function */ (answer) => answer,
+  when: /* function */ () => true
 }
 
 var questions = /* array[string|object] */ [
@@ -71,6 +73,20 @@ var options = questionAsObject // options are just default values for question(s
   /* optional boolean */ defaultValue
 )
 ```
+
+### Return and `answers` argument
+
+`go.ask` and `go.confirm` always returns a promise. If `go.ask` received a list of questions, it resolves with an array of answer. If some of questions in sequence has `name` property, the answer will be copied to the property, named with the value of `name`, to the resulting array.
+
+```js
+const results = await go.ask([
+  { name: 'color', message: 'what is your favorite color?' }
+])
+
+console.log(results[0] === results.name) // true
+```
+
+When name property is mentioned in a question object, the answer of that question can be used farther in a sequence of questions for different purposes, e.g. forming choices list, skipping questions and etc. Check [Conditional questions](#conditional-questions) to see an example.
 
 ## Examples
 
@@ -117,11 +133,41 @@ const [ name, dest ] = await go.ask([
 ], { default: 'my-project' })
 ```
 
+### Named answers
+
+```js
+const { name, dest } = await go.ask([
+  { name: 'name',
+    message: 'project name',
+    default: 'my-project' },
+
+  { name: 'dest',
+    message: 'destination folder' }
+])
+```
+
+### Conditional questions
+
+Using `when` property lets you to choose in runtime which questions have to be skipped.
+
+```js
+const { dest } = await go.ask([
+  { name: 'install',
+    type: 'confirm',
+  	message: 'do you want to install extension pack?' },
+  { name: 'dest',
+    message: '',
+    // if when() returns true the question will be shown, or skipped otherwise
+    // answers is an object with results for named questions
+    when: (answers) => answers.install }
+])
+```
+
 ### Input validation
 
 `validate` property can be used with any type to automate input validation.
 
-Enquirer requires [odd validation process](https://github.com/enquirer/prompt-base/blob/22e7996165904db881c59c7c10b831fc548dce83/examples/ask.validate.js#L5). Not to change it's API and to add more oddities to validation process 3rd argument is passed to validate function:
+Enquirer requires [odd validation process](https://github.com/enquirer/prompt-base/blob/22e7996165904db881c59c7c10b831fc548dce83/examples/ask.validate.js#L5). To add more oddities to validation process new arguments are added:
 
 ```js
 const isUndefined = value => typeof value === 'undefined'
@@ -129,7 +175,7 @@ const NAME_MIN = 4
 
 const name = await go.ask({
   message: 'enter name',
-  validate: (input, key, entered) => {
+  validate: (input, key, entered, answers) => {
     /*
      * key {
      *   name - pressed key, e.g. 'x', 'space', 'line' (line stays for Return/Enter button)
@@ -141,6 +187,7 @@ const name = await go.ask({
      * }
      * input - always a key name, but the string with result of input or undefined (if result is empty) for Return/Enter
      * entered - undefined unless Return/Enter pressed, and the string with result of input otherwise
+     * answers - object with answered questions
      */
 
     if (isUndefined(entered)) return true
@@ -180,6 +227,8 @@ const codes = await go.ask({
   transform: selected => selected.map(state => getCode(state))
 })
 ```
+
+> `transform` receive two arguments: `answer` (contains an answer of owning question) and `answers` (a list of [answered questions](#return-and-answers-argument)).
 
 ### All pre-installed question types
 
@@ -227,11 +276,25 @@ const languages = await go.ask({
   default: 'ES6'
 })
 
-// when choices are specified as an array, list-type is choosed automatically
+// when choices is specified, list-type is choosed automatically
 const languages = await go.ask({
   message: 'which syntax do you prefer?',
   choices: [ 'ES5', 'ES6' ],
   default: 'ES6'
+})
+
+// choices can be a function
+const languages = await go.ask({
+  message: 'which languages do you use?',
+  choices: (answers) => [ 'ES5', 'ES6' ],
+  default: 'javascript'
+})
+
+// and that function can return a promise
+const languages = await go.ask({
+  message: 'which languages do you use?',
+  choices: (answers) => Promise.resolve([ 'ES5', 'ES6' ]),
+  default: 'javascript'
 })
 ```
 
@@ -278,10 +341,11 @@ const languages = await go.ask({
 // when using grouping of choices, group names are included to
 // resulted array if all of nested options are selected
 
-// or when 'choices' is a function (that returns an array or an object of choices)
+// and again, choices can be a function that returns object, array or promise with one of this types
 const languages = await go.ask({
   message: 'which languages do you use?',
-  choices: () => require('./languages'),
+  radio: true,
+  choices: (answers) => loadLanguages(),
   default: 'javascript'
 })
 ```
@@ -311,13 +375,15 @@ By default, source is filtered using `new RegExp(input, 'i')` expression. You ma
 ```js
 const state = await go.ask({
   message: 'choose state where parcel have to be delivered',
-  source: (input) => Promise.resolve(
-  	input ? states.filter(state => state.startsWith(input)) : states
-  )
+  source: (input) => input ? states.filter(state => state.startsWith(input)) : states
+})
+
+// or using promises for asynchonous fetch
+const state = await go.ask({
+  message: 'choose state where parcel have to be delivered',
+  source: (input) => fetchStates({ name: input })
 })
 ```
-
-> When specifying source as a function, make sure it returns a promise.
 
 ### Mixing different types
 
