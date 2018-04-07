@@ -3,15 +3,14 @@
   "version": "3.0.0",
   "description": "Go plugin to communicate with user using shell prompt",
   "scripts": {
-    "start": "rollup -cw",
-    "test": "standard -v | snazzy",
-    "build": "rollup -c",
-    "prepublishOnly": "npm run test && npm run build"
+    "lint": "standard -v | snazzy",
+    "test": "npm run lint",
+    "prepublishOnly": "npm run test"
   },
   "engines": {
     "node": ">=6.4.0"
   },
-  "main": "dist/bundle.js",
+  "main": "./lib/plugin.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gocli/go-plugin-quiz.git"
@@ -26,27 +25,19 @@
   ],
   "author": "Stanislav Termosa <termosa.stanislav@gmail.com> (https://github.com/termosa)",
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "bugs": {
     "url": "https://github.com/gocli/go-plugin-quiz/issues"
   },
   "homepage": "https://github.com/gocli/go-plugin-quiz#readme",
   "devDependencies": {
-    "rollup": "^0.55.3",
-    "rollup-plugin-buble": "^0.18.0",
-    "rollup-plugin-standard": "^1.0.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3"
   },
   "dependencies": {
     "inquirer": "5.1.0",
     "inquirer-autocomplete-prompt": "0.12.1"
-  },
-  "standard": {
-    "globals": [
-      "describe",
-      "expect",
-      "it",
-      "jest"
-    ]
   }
 }
