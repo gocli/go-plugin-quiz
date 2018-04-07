@@ -4,7 +4,10 @@
   "description": "Go plugin to communicate with user using shell prompt",
   "scripts": {
     "lint": "standard -v | snazzy",
-    "test": "npm run lint",
+    "unit": "jest --coverage",
+    "unit:watch": "jest --coverage --watchAll",
+    "coverage": "npm run unit; opn coverage/lcov-report/index.html",
+    "test": "npm run lint && npm run unit",
     "prepublishOnly": "npm run test"
   },
   "engines": {
@@ -33,11 +36,21 @@
   },
   "homepage": "https://github.com/gocli/go-plugin-quiz#readme",
   "devDependencies": {
+    "jest": "^22.4.2",
+    "opn-cli": "^3.1.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3"
   },
   "dependencies": {
     "inquirer": "5.1.0",
     "inquirer-autocomplete-prompt": "0.12.1"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "expect",
+      "it",
+      "jest"
+    ]
   }
 }
