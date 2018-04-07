@@ -16,6 +16,7 @@ describe('Plugin', () => {
     plugin.install(obj)
 
     expect(typeof obj.ask).toBe('function', 'exports ask()')
+    expect(typeof obj.ask.separator).toBe('function', 'exports ask.separator()')
     expect(typeof obj.confirm).toBe('function', 'exports confirm()')
     expect(typeof obj.registerQuestion).toBe('function', 'exports registerQuestion()')
   })
