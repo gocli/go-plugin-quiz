@@ -8,7 +8,7 @@ describe('chainQuestions()', () => {
   it('calls a list of promised functions in a sequence', () => {
     const results = []
 
-    let i = 0;
+    let i = 0
     const createCallback = () => {
       const callback = jest.fn()
       const id = i++
