@@ -1,4 +1,4 @@
-# go-plugin-quiz [![npm](https://img.shields.io/npm/v/go-plugin-quiz.svg?style=flat-square)](https://www.npmjs.com/package/go-plugin-quiz) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-green.svg?style=flat-square)](https://github.com/gocli/go-plugin-quiz) [![Travis](https://img.shields.io/travis/gocli/go-plugin-quiz.svg?style=flat-square)](https://travis-ci.org/gocli/go-plugin-quiz)
+# go-plugin-quiz [![npm](https://img.shields.io/npm/v/go-plugin-quiz.svg?style=flat-square)](https://www.npmjs.com/package/go-plugin-quiz) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-green.svg?style=flat-square)](https://github.com/gocli/go-plugin-quiz) [![Travis](https://img.shields.io/travis/gocli/go-plugin-quiz.svg?style=flat-square)](https://travis-ci.org/gocli/go-plugin-quiz) [![Coveralls](https://img.shields.io/coveralls/github/gocli/go-plugin-quiz.svg?style=flat-square)](https://coveralls.io/github/gocli/go-plugin-quiz)
 
 [Go](https://www.npmjs.com/package/go) plugin to communicate with user using shell prompt.
 
