@@ -1,22 +1,31 @@
-# go-plugin-quiz [![npm](https://img.shields.io/npm/v/go-plugin-quiz.svg?style=flat-square)](https://www.npmjs.com/package/go-plugin-quiz) [![Travis](https://img.shields.io/travis/gocli/go-plugin-quiz.svg?style=flat-square)](https://travis-ci.org/gocli/go-plugin-quiz) [![Coveralls](https://img.shields.io/coveralls/github/gocli/go-plugin-quiz.svg?style=flat-square)](https://coveralls.io/github/gocli/go-plugin-quiz) [![Known Vulnerabilities](https://snyk.io/test/github/gocli/go-plugin-quiz/badge.svg?style=flat-square)](https://snyk.io/test/github/gocli/go-plugin-quiz) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-green.svg?style=flat-square)](https://github.com/gocli/go-plugin-quiz)
+# go-plugin-quiz
 
-[Go](https://www.npmjs.com/package/go) plugin to communicate with user using shell prompt.
+[![npm](https://img.shields.io/npm/v/go-plugin-quiz.svg?style=flat-square)](https://www.npmjs.com/package/go-plugin-quiz)
+[![Travis](https://img.shields.io/travis/gocli/go-plugin-quiz.svg?style=flat-square)](https://travis-ci.org/gocli/go-plugin-quiz)
+[![Coveralls](https://img.shields.io/coveralls/github/gocli/go-plugin-quiz.svg?style=flat-square)](https://coveralls.io/github/gocli/go-plugin-quiz)
+[![Vulnerabilities](https://snyk.io/test/github/gocli/go-plugin-quiz/badge.svg?style=flat-square)](https://snyk.io/test/github/gocli/go-plugin-quiz)
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-green.svg?style=flat-square)](https://github.com/gocli/go-plugin-quiz)
 
 ![go-plugin-quiz example](https://raw.githubusercontent.com/gocli/go-plugin-quiz/master/docs/example.gif)
+
+[Go](https://www.npmjs.com/package/go) plugin to communicate with user using shell prompt.
 
 > This plugin is made on top of [Inquirer](https://www.npmjs.com/package/inquirer). Thanks [@sboudrias](https://www.npmjs.com/~sboudrias) and [@mischah](https://www.npmjs.com/~mischah) for it!
 
 ## Table of Contents
 
+- [go-plugin-quiz](#go-plugin-quiz)
+  - [Table of Contents](#table-of-contents)
   - [Usage](#usage)
     - [Installation](#installation)
     - [Quick Start](#quick-start)
-    - [API Reference](#api-reference)
-      - [go.ask](#goask)
-      - [go.confirm](#goconfirm)
-      - [go.ask.separator](#goaskseparator)
-      - [go.registerQuestion](#goregisterquestion)
-    - [Question Options](#question-options)
+  - [API](#api)
+    - [Methods](#methods)
+      - [confirm](#confirm)
+      - [ask](#ask)
+      - [ask.separator](#askseparator)
+      - [registerQuestion](#registerquestion)
+    - [Question Object](#question-object)
       - [type](#type)
       - [name](#name)
       - [message](#message)
@@ -35,19 +44,19 @@
       - [suggestOnly](#suggestonly)
     - [Session](#session)
     - [Result](#result)
-  - [Question Types](#question-types)
-    - [Available Types](#available-types)
-      - [Input](#input)
-      - [Password](#password)
-      - [Confirm](#confirm)
-      - [List](#list)
-      - [Raw List](#raw-list)
-      - [Checkbox](#checkbox)
-      - [Autocomplete](#autocomplete)
-      - [Editor](#editor)
-      - [Expand](#expand)
-    - [Duck Typing](#duck-typing)
-    - [More Types](#more-types)
+    - [Question Types](#question-types)
+      - [Available Types](#available-types)
+        - [Input](#input)
+        - [Password](#password)
+        - [Confirm](#confirm)
+        - [List](#list)
+        - [Raw List](#raw-list)
+        - [Checkbox](#checkbox)
+        - [Autocomplete](#autocomplete)
+        - [Editor](#editor)
+        - [Expand](#expand)
+      - [Duck Typing](#duck-typing)
+      - [More Types](#more-types)
   - [Examples](#examples)
     - [Ask for the basic text input](#ask-for-the-basic-text-input)
     - [Ask a question with options](#ask-a-question-with-options)
@@ -65,15 +74,10 @@
 ### Installation
 
 ```bash
-$ npm install go go-plugin-quiz
+$ npm install --save-dev go go-plugin-quiz
 ```
 
 ```js
-const go = require('go')
-go.use(require('go-plugin-quiz'))
-
-// or
-
 import go from 'go'
 import { QuizPlugin } from 'go-plugin-quiz'
 go.use(QuizPlugin)
@@ -123,7 +127,7 @@ go.ask([
     choices: [ 'test server', 'stage', 'production' ] },
   { name: 'continue',
     type: 'confirm',
-    message: 'You are about to deplot it. Continue?' }
+    message: 'You are about to deploy it. Continue?' }
 ]).then((answers) => {
   if (answers.continue) {
     console.log(`Deploying to ${answers.server}`)
@@ -133,9 +137,19 @@ go.ask([
 })
 ```
 
-### API Reference
+## API
 
-#### go.ask
+### Methods
+
+#### confirm
+
+```
+go.confirm( message [ , default ] ): Promise<answer>
+```
+
+This is a shortcut for `go.ask( { type: 'confirm', message, default } )`
+
+#### ask
 
 ```
 go.ask( questions [ , defaults ] ): Promise<answer | answers[]>
@@ -147,15 +161,7 @@ Asks a user for input in a shell.
 
 Every call of the `ask` is creating a new [session](#session) that can be used to change `ask` behavior during execution.
 
-#### go.confirm
-
-```
-go.confirm(message [ , default ] ): Promise<answer>
-```
-
-This is a shortcut for `go.ask( { type: 'confirm', message, default } )`
-
-#### go.ask.separator
+#### ask.separator
 
 ```
 go.ask.separator( [ message ] ): ChoicesSeparator
@@ -163,7 +169,7 @@ go.ask.separator( [ message ] ): ChoicesSeparator
 
 Generate a special object that can be used in [choices](#choices) to create an inactive line in the list.
 
-#### go.registerQuestion
+#### registerQuestion
 
 ```
 go.registerQuestion( type, InquirerPrompt ): void
@@ -172,14 +178,14 @@ go.registerQuestion( type, InquirerPrompt ): void
 Register a new question type.
 For more details, read chapter [More Types](#more-types)
 
-### Question Options
+### Question Object
 
 Every question is an object that may contain one or multiple of options listed below.
 
 #### type
 
 - Valid types: `string`
-- Possible values: `"input"`, `"confirm"`, `"list"`, `"rawlist"`, `"expand"`, `"checkbox"`, `"password"`, `"editor"`, `"autocomplete"`, and [more](#goregisterquestion)
+- Possible values: `"input"`, `"confirm"`, `"list"`, `"rawlist"`, `"expand"`, `"checkbox"`, `"password"`, `"editor"`, `"autocomplete"`, and [more](#registerquestion)
 - Default value: `"input"`
 - Supported questions: ALL
 
@@ -206,7 +212,7 @@ If defined as a function, the first parameter will be the **answers** object of 
 
 - Valid types: `string | number | array | function`
 - Function arguments: `answers`
-- Supported questions: [Input](#input), [Password](#password), [Confirm](#confirm), [List](#list), [Raw List](#raw-list), [Checkbox](#checkbox), [Expand](#expand), [Editor](#editor)
+- Supported questions: [Input](#input), [Password](#password), [Confirm](#confirm-1), [List](#list), [Raw List](#raw-list), [Checkbox](#checkbox), [Expand](#expand), [Editor](#editor)
 
 Default value(s) to use if nothing is entered, or a function that returns the default value(s).
 If defined as a function, the first parameter will be the **answers** object of the current [session](#session).
@@ -220,7 +226,7 @@ If defined as a function, the first parameter will be the **answers** object of 
 Choices is an array or a function returning a choices array.
 If defined as a function, the first parameter will be the **answers** object of the current [session](#session).
 Array values can be simple `strings`, or `objects` containing a **name** (to display in list), a **value** (to save in the **answers** object), a **short** (to display after selection) properties, and a **checked** (to make it selected when using with [Checkbox](#checkbox)).
-The choices array can also contain a [Separator](#goaskseparator).
+The choices array can also contain a [Separator](#askseparator).
 
 #### validate
 
@@ -322,17 +328,18 @@ This way you can accept manual input instead of forcing a selection from the lis
 
 ### Session
 
-A new session is created every time [`ask`](#goask) is called.
 The session stores all user answers to return them as a result of execution and make them available during runtime as an **answers** argument of questions methods like [`when`](#when), [`validate`](#validate) and [others](#question-options).
 
 The **answers** object is of a type `array` and stores answers in the same order as questions were organized.
 As well, **answers** object has a property named `_` (underscore) that contains a hash object with answers for questions that were defined with **name** attribute that is used as a `key` in that object.
 The same list of keys is assigned to **answers** object.
-It makes using [`ask`](#goask) together with [destructuring object assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) nicer.
+It makes using [`ask`](#ask) together with [destructuring object assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) nicer.
+
+A new session is created for every [`ask`](#ask) call.
 
 ### Result
 
-[`go.ask`](#goask) and [`go.confirm`](#goconfirm) return promises as the result.
+[`go.ask`](#ask) and [`go.confirm`](#confirm) return promises as the result.
 It resolves either with what user choose or entered or with an **answers** object created in [session](#session) when `go.ask` was called with an array of questions.
 
 You may use [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), [async/await](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) and [destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) features to retrieve answer(s):
@@ -367,33 +374,31 @@ const { name, description } = await go.ask([
 ])
 ```
 
-## Question Types
+### Question Types
 
-### Available Types
+#### Available Types
 
-> Options listed inside square brackets (`[]`) are optional and others are **required**.
+> [`when`](#when), [`prefix`](#prefix) and [`suffix`](#suffix) are available and optional for all types.
 
-> `when`, `prefix` and `suffix` are available and optional for all types.
-
-#### Input
+##### Input
 
 `{ type: 'input' , `[`message`](#message)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`filter`](#filter)` , `[`validate`](#validate)` , `[`transformer`](#transformer)` ] }`
 
 Basic text input.
 
-#### Password
+##### Password
 
 `{ type: 'password' , `[`message`](#message)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`filter`](#filter)` , `[`validate`](#validate)` , `[`mask`](#mask)` ] }`
 
 It is like [Input](#input) but hides what was entered or replace it with [mask](#mask) string.
 
-#### Confirm
+##### Confirm
 
 `{ type: 'confirm' , `[`message`](#message)` [ , `[`name`](#name)` , `[`default`](#default)` ] }`
 
 Suggest to enter `'y'` or `'n'` and if entered string starts with `'y'` or `'Y'` results to `true`, otherwise results to `false`.
 
-#### List
+##### List
 
 `{ type: 'list' , `[`message`](#message)` , `[`choices`](#choices)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`filter`](#filter)` , `[`pageSize`](#pagesize)` ] }`
 
@@ -401,7 +406,7 @@ Suggest to enter `'y'` or `'n'` and if entered string starts with `'y'` or `'Y'`
 
 Offer a list of options where the one can be selected using arrow keys (Up and Down).
 
-#### Raw List
+##### Raw List
 
 `{ type: 'rawlist' , `[`message`](#message)` , `[`choices`](#choices)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`filter`](#filter)` , `[`pageSize`](#pagesize)` ] }`
 
@@ -409,7 +414,7 @@ Offer a list of options where the one can be selected using arrow keys (Up and D
 
 Offer a list of options where the one can be selected by entering an index number.
 
-#### Checkbox
+##### Checkbox
 
 `{ type: 'checkbox' , `[`message`](#message)` , `[`choices`](#choices)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`filter`](#filter)` , `[`validate`](#validate)` , `[`pageSize`](#pagesize)` ] }`
 
@@ -423,14 +428,14 @@ If **disabled** is truthy the option will be unselectable.
 If **disabled** is a `string`, then the string will be outputted next to the disabled choice.
 The **disabled** property can also be a synchronous `function` receiving the current answers as argument and returning a `boolean` or a `string`.
 
-#### Autocomplete
+##### Autocomplete
 
 `{ type: 'autocomplete' , `[`message`](#message)` , `[`source`](#source)` [ , `[`name`](#name)` , `[`filter`](#filter)` , `[`suggestOnly`](#suggestonly)` , `[`validate`](#validate)` , `[`pageSize`](#pagesize)` ] }`
 
 Offer a list of options where the one can be selected using arrow keys (Up and Down) and the list can be filtered by typing text in.
 Read how to filter [`source`](#source) list and how autocomplete can [`only suggest`](#suggestonly) options.
 
-#### Editor
+##### Editor
 
 `{ type: 'editor' , `[`message`](#message)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`filter`](#filter)` , `[`validate`](#validate)` ] }`
 
@@ -439,7 +444,7 @@ Once the user exits their editor, the contents of the temporary file are read in
 The editor to use is determined by reading the `$VISUAL` or `$EDITOR` environment variables.
 If neither of those are present, **notepad** (Windows) or **vim** (Linux or Mac) is used.
 
-#### Expand
+##### Expand
 
 `{ type: 'expand' , `[`message`](#message)` , `[`choices`](#choices)` [ , `[`name`](#name)` , `[`default`](#default)` , `[`pageSize`](#pagesize)` ] }`
 
@@ -451,7 +456,7 @@ Offer a list of options and let to choose one using a key alias.
 This parameter must be a single lowercased character.
 The `'h'` option is added by the prompt to show a list of available options and shouldn't be defined by the user.
 
-### Duck Typing
+#### Duck Typing
 
 It is not required to provide a **type** property to specify the question type.
 There are some rules that are used to determine the type of a question if it is not specified.
@@ -463,10 +468,10 @@ There are some rules that are used to determine the type of a question if it is 
 3. If **source** is presented, **type** is `'autocomplete'`
 4. Otherwise, **type** is `'input'`
 
-### More Types
+#### More Types
 
 This is not the exhaustive list of question types.
-You can add more types using [Inquirer plugins](https://www.npmjs.com/package/inquirer#plugins) with [`go.registerQuestion`](#goregisterquestion):
+You can add more types using [Inquirer plugins](https://www.npmjs.com/package/inquirer#plugins) with [`go.registerQuestion`](#registerquestion):
 
 ```js
 const go = require('go')
