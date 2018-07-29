@@ -144,7 +144,7 @@ go.ask([
 #### confirm
 
 ```
-go.confirm( message [ , default ] ): Promise<answer>
+go.confirm( message [ , default ] ): Promise<Answer>
 ```
 
 This is a shortcut for `go.ask( { type: 'confirm', message, default } )`
@@ -152,12 +152,13 @@ This is a shortcut for `go.ask( { type: 'confirm', message, default } )`
 #### ask
 
 ```
-go.ask( questions [ , defaults ] ): Promise<answer | answers[]>
+go.ask( questions [ , defaults ] ): Promise<Answer | Answers[]>
 ```
 
 Asks a user for input in a shell.
-`questions` can be a [Question Object](#question-options), a string (it will resolve to `message` property of a question), or an array with mix of Question Objects and strings.
-`defaults` is an object that defined default properties for each question in a list.
+
+- `questions` {string|object|array} — can be a [Question Object](#question-options), a string (it will resolve to `message` property of a question), or an array with mix of Question Objects and strings.
+- `defaults` {object} — is an object that defined default properties for each question in a list.
 
 Every call of the `ask` is creating a new [session](#session) that can be used to change `ask` behavior during execution.
 
@@ -169,13 +170,19 @@ go.ask.separator( [ message ] ): ChoicesSeparator
 
 Generate a special object that can be used in [choices](#choices) to create an inactive line in the list.
 
+- `message` {stirng} — text to be used in a separator
+
 #### registerQuestion
 
 ```
-go.registerQuestion( type, InquirerPrompt ): void
+go.registerQuestion( type, prompt ): void
 ```
 
 Register a new question type.
+
+- `type` {string} — name of a new question type
+- `prompt` {object} — [InquirerPrompt](https://www.npmjs.com/package/inquirer#plugins) instance
+
 For more details, read chapter [More Types](#more-types)
 
 ### Question Object
